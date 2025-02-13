@@ -1,89 +1,70 @@
-/* From Uiverse.io by kennyotsu */
-.card {
-  /* color used to softly clip top and bottom of the .words container */
-  --bg-color: #212121;
-  background-color: var(--bg-color);
-  padding: 1rem 2rem;
-  border-radius: 1.25rem;
-}
-.loader {
-  color: rgb(124, 124, 124);
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  font-size: 25px;
-  -webkit-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 40px;
-  padding: 10px 10px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  border-radius: 8px;
-}
-
-.words {
-  overflow: hidden;
+.group {
   position: relative;
-}
-.words::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    var(--bg-color) 10%,
-    transparent 30%,
-    transparent 70%,
-    var(--bg-color) 90%
-  );
-  z-index: 20;
+  margin-bottom: 45px;
 }
 
-.word {
+.input {
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
   display: block;
-  height: 100%;
-  padding-left: 6px;
-  color: #956afa;
-  animation: spin_4991 4s infinite;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #757575;
+  background: transparent;
 }
 
-@keyframes spin_4991 {
-  10% {
-    -webkit-transform: translateY(-102%);
-    transform: translateY(-102%);
-  }
+.input:focus {
+  outline: none;
+}
 
-  25% {
-    -webkit-transform: translateY(-100%);
-    transform: translateY(-100%);
-  }
+.bar {
+  position: relative;
+  display: block;
+  width: 100%;
+}
 
-  35% {
-    -webkit-transform: translateY(-202%);
-    transform: translateY(-202%);
-  }
+.bar:before,
+.bar:after {
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: #5264AE;
+  transition: 0.2s ease all;
+}
 
-  50% {
-    -webkit-transform: translateY(-200%);
-    transform: translateY(-200%);
-  }
+.bar:before {
+  left: 50%;
+}
 
-  60% {
-    -webkit-transform: translateY(-302%);
-    transform: translateY(-302%);
-  }
+.bar:after {
+  right: 50%;
+}
 
-  75% {
-    -webkit-transform: translateY(-300%);
-    transform: translateY(-300%);
-  }
+.input:focus ~ .bar:before,
+.input:focus ~ .bar:after {
+  width: 50%;
+}
 
-  85% {
-    -webkit-transform: translateY(-402%);
-    transform: translateY(-402%);
-  }
+.suggestions {
+  position: absolute;
+  z-index: 10;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
+  max-height: 150px;
+  overflow-y: auto;
+  width: calc(100% - 20px);
+  left: 10px;
+}
 
-  100% {
-    -webkit-transform: translateY(-400%);
-    transform: translateY(-400%);
-  }
+.suggestion {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion:hover {
+  background-color: #f1f1f1;
 }
