@@ -35,6 +35,7 @@ export default function ExpenseForm({ onClose }: ExpenseFormProps) {
   } = useForm<ExpenseFormData>()
   const queryClient = useQueryClient()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [descriptionSuggestions, setDescriptionSuggestions] = useState<string[]>([])
 
   // Fetch categories
   const { data: categories, isLoading: isCategoriesLoading, isError: isCategoriesError } = useQuery({
@@ -53,6 +54,20 @@ export default function ExpenseForm({ onClose }: ExpenseFormProps) {
       const { data, error } = await supabase.from("suppliers").select("*")
       if (error) throw error
       return data
+    },
+  })
+
+  // Fetch previous descriptions
+  const { data: previousDescriptions } = useQuery({
+    queryKey: ["previousDescriptions"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("expenses")
+        .select("description")
+        .order("description", { ascending: true })
+        .limit(100) // Limit to the 100 most common descriptions
+      if (error) throw error
+      return data.map((item: { description: string }) => item.description)
     },
   })
 
@@ -122,6 +137,19 @@ export default function ExpenseForm({ onClose }: ExpenseFormProps) {
     addExpenseMutation.mutate(data)
   }
 
+  const handleDescriptionInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const input = event.target.value.toLowerCase()
+    const suggestions = previousDescriptions?.filter(description =>
+      description.toLowerCase().includes(input)
+    ) || []
+    setDescriptionSuggestions(suggestions)
+  }
+
+  const handleDescriptionSelect = (description: string) => {
+    setValue("description", description)
+    setDescriptionSuggestions([])
+  }
+
   const category = watch("category_id")
   const quantity = watch("quantity")
   const amount = watch("amount")
@@ -183,15 +211,29 @@ export default function ExpenseForm({ onClose }: ExpenseFormProps) {
             </select>
             <span className={styles.bar}></span>
           </div>
-          <div className={styles.group}>
+          <div className={styles.group} style={{ position: "relative" }}>
             <input
               type="text"
               id="description"
               {...register("description", { required: true })}
               className={styles.input}
               placeholder="Description"
+              onChange={handleDescriptionInput}
             />
             <span className={styles.bar}></span>
+            {descriptionSuggestions.length > 0 && (
+              <ul className={styles.suggestions}>
+                {descriptionSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    className={styles.suggestion}
+                    onClick={() => handleDescriptionSelect(suggestion)}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="flex gap-2">
             <div className={`${styles.group} flex-1`}>
@@ -297,4 +339,3 @@ export default function ExpenseForm({ onClose }: ExpenseFormProps) {
     </div>
   )
 }
-
