@@ -89,7 +89,7 @@ export default function ExpenseTracker() {
             <h1 className="text-2xl font-bold">Expense Tracker</h1>
             <button
               onClick={handleSignOut}
-              className="text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+              className={`${styles.button} text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors`}
             >
               Sign Out
             </button>
