@@ -1,14 +1,15 @@
 .group {
   position: relative;
+  margin-bottom: 45px;
 }
 
 .input {
-  font-size: 16px;
+  font-size: 18px;
   padding: 10px 10px 10px 5px;
   display: block;
   width: 100%;
   border: none;
-  border-bottom: 1px solid #515151;
+  border-bottom: 1px solid #757575;
   background: transparent;
 }
 
@@ -22,7 +23,8 @@
   width: 100%;
 }
 
-.bar:before, .bar:after {
+.bar:before,
+.bar:after {
   content: '';
   height: 2px;
   width: 0;
@@ -30,8 +32,6 @@
   position: absolute;
   background: #5264AE;
   transition: 0.2s ease all;
-  -moz-transition: 0.2s ease all;
-  -webkit-transition: 0.2s ease all;
 }
 
 .bar:before {
@@ -42,32 +42,29 @@
   right: 50%;
 }
 
-.input:focus ~ .bar:before, .input:focus ~ .bar:after {
+.input:focus ~ .bar:before,
+.input:focus ~ .bar:after {
   width: 50%;
 }
 
-.highlight {
+.suggestions {
   position: absolute;
-  height: 60%;
-  width: 100px;
-  top: 25%;
-  left: 0;
-  pointer-events: none;
-  opacity: 0.5;
+  z-index: 10;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
+  max-height: 150px;
+  overflow-y: auto;
+  width: calc(100% - 20px);
+  left: 10px;
 }
 
-.input:focus ~ .highlight {
-  animation: inputHighlighter 0.3s ease;
+.suggestion {
+  padding: 10px;
+  cursor: pointer;
 }
 
-@keyframes inputHighlighter {
-  from {
-    background: #5264AE;
-  }
-
-  to {
-    width: 0;
-    background: transparent;
-  }
+.suggestion:hover {
+  background-color: #f1f1f1;
 }
-
