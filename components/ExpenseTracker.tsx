@@ -13,7 +13,6 @@ export default function ExpenseTracker() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [timePeriod, setTimePeriod] = useState("all-time")
-  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
@@ -24,7 +23,6 @@ export default function ExpenseTracker() {
       } else {
         setUser(currentUser)
       }
-      setIsLoading(false)
     }
     checkUser()
   }, [router])
@@ -79,18 +77,18 @@ export default function ExpenseTracker() {
     refetchInterval: 5000, // Refetch every 5 seconds
   })
 
-  if (isLoading) {
+  if (!user) {
     return (
-      <div className="loader">
-        <div className="words">
-          <div className="word">Loading</div>
+      <div className={`${styles.card} ${styles.loader}`}>
+        <div className={styles.words}>
+          <span className={styles.word}>Loading</span>
+          <span className={styles.word}>Loading</span>
+          <span className={styles.word}>Loading</span>
+          <span className={styles.word}>Loading</span>
+          <span className={styles.word}>Loading</span>
         </div>
       </div>
-    )
-  }
-
-  if (!user) {
-    return null // or a loading spinner
+    ) // or a loading spinner
   }
 
   return (
@@ -120,7 +118,15 @@ export default function ExpenseTracker() {
               <option value="this-month">This Month</option>
             </select>
             {isTotalLoading ? (
-              <p className="text-gray-600">Loading...</p>
+              <div className={`${styles.card} ${styles.loader}`}>
+                <div className={styles.words}>
+                  <span className={styles.word}>Loading</span>
+                  <span className={styles.word}>Loading</span>
+                  <span className={styles.word}>Loading</span>
+                  <span className={styles.word}>Loading</span>
+                  <span className={styles.word}>Loading</span>
+                </div>
+              </div>
             ) : isTotalError ? (
               <p className="text-red-600">Error: {(totalError as Error).message}</p>
             ) : (
@@ -132,7 +138,15 @@ export default function ExpenseTracker() {
           <div className="bg-white rounded-lg shadow p-4 mb-4">
             <h2 className="text-lg font-semibold mb-2">Today&apos;s Total Expenses</h2>
             {isTodayLoading ? (
-              <p className="text-gray-600">Loading...</p>
+              <div className={`${styles.card} ${styles.loader}`}>
+                <div className={styles.words}>
+                  <span className={styles.word}>Loading</span>
+                  <span className={styles.word}>Loading</span>
+                  <span className={styles.word}>Loading</span>
+                  <span className={styles.word}>Loading</span>
+                  <span className={styles.word}>Loading</span>
+                </div>
+              </div>
             ) : isTodayError ? (
               <p className="text-red-600">Error: {(todayError as Error).message}</p>
             ) : (
