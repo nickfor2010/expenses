@@ -1,0 +1,121 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { supabase, signOut, getCurrentUser } from "@/lib/supabase"
+import ExpenseFormMobile from "@/components/ExpenseFormMobile"
+import { format } from "date-fns"
+import ErrorBoundary from "@/components/ErrorBoundary"
+import { useRouter } from "next/navigation"
+import styles from "@/components/ExpenseTracker.module.css"
+
+export default function ExpenseTracker() {
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const currentUser = await getCurrentUser()
+      if (!currentUser) {
+        router.push("/signin")
+      } else {
+        setUser(currentUser)
+      }
+    }
+    checkUser()
+  }, [router])
+
+  const handleSignOut = async () => {
+    const { error } = await signOut()
+    if (!error) {
+      router.push("/signin")
+    }
+  }
+
+  const {
+    data: totalExpenses,
+    isLoading: isTotalLoading,
+    isError: isTotalError,
+    error: totalError,
+  } = useQuery({
+    queryKey: ["totalExpenses"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("expenses").select("amount")
+      if (error) throw error
+      return data.reduce((sum, expense) => sum + (expense.amount || 0), 0)
+    },
+    refetchInterval: 5000, // Refetch every 5 seconds
+  })
+
+  const {
+    data: todayExpenses,
+    isLoading: isTodayLoading,
+    isError: isTodayError,
+    error: todayError,
+  } = useQuery({
+    queryKey: ["todayExpenses"],
+    queryFn: async () => {
+      const today = format(new Date(), "yyyy-MM-dd")
+      const { data, error } = await supabase.from("expenses").select("amount").eq("date", today)
+      if (error) throw error
+      return data.reduce((sum, expense) => sum + (expense.amount || 0), 0)
+    },
+    refetchInterval: 5000, // Refetch every 5 seconds
+  })
+
+  if (!user) {
+    return null // or a loading spinner
+  }
+
+  return (
+    <ErrorBoundary>
+      <div className={styles.container}>
+        <div className="max-w-md mx-auto p-4">
+          <div className={`${styles.header} flex justify-between items-center mb-4`}>
+            <h1 className="text-2xl font-bold">Expense Tracker</h1>
+            <button
+              onClick={handleSignOut}
+              className="text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+
+          {/* Total Expenses Card */}
+          <div className="bg-white rounded-lg shadow p-4 mb-4">
+            <h2 className="text-lg font-semibold mb-2">Total Expenses</h2>
+            {isTotalLoading ? (
+              <p className="text-gray-600">Loading...</p>
+            ) : isTotalError ? (
+              <p className="text-red-600">Error: {(totalError as Error).message}</p>
+            ) : (
+              <p className="text-3xl font-bold">${totalExpenses?.toFixed(2) || "0.00"}</p>
+            )}
+          </div>
+
+          {/* Today's Total Expenses Card */}
+          <div className="bg-white rounded-lg shadow p-4 mb-4">
+            <h2 className="text-lg font-semibold mb-2">Today&apos;s Total Expenses</h2>
+            {isTodayLoading ? (
+              <p className="text-gray-600">Loading...</p>
+            ) : isTodayError ? (
+              <p className="text-red-600">Error: {(todayError as Error).message}</p>
+            ) : (
+              <p className="text-3xl font-bold">${todayExpenses?.toFixed(2) || "0.00"}</p>
+            )}
+          </div>
+
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className={styles.button}
+          >
+            Add Expense
+          </button>
+          {isFormOpen && <ExpenseFormMobile onClose={() => setIsFormOpen(false)} />}
+        </div>
+      </div>
+    </ErrorBoundary>
+  )
+}
+
