@@ -67,7 +67,8 @@ export default function ExpenseForm({ onClose }: ExpenseFormProps) {
         .order("description", { ascending: true })
         .limit(100) // Limit to the 100 most common descriptions
       if (error) throw error
-      return data.map((item: { description: string }) => item.description)
+      const uniqueDescriptions = Array.from(new Set(data.map((item: { description: string }) => item.description)))
+      return uniqueDescriptions
     },
   })
 
