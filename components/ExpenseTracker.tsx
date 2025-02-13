@@ -13,6 +13,7 @@ export default function ExpenseTracker() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [timePeriod, setTimePeriod] = useState("all-time")
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function ExpenseTracker() {
       } else {
         setUser(currentUser)
       }
+      setIsLoading(false)
     }
     checkUser()
   }, [router])
@@ -76,6 +78,16 @@ export default function ExpenseTracker() {
     },
     refetchInterval: 5000, // Refetch every 5 seconds
   })
+
+  if (isLoading) {
+    return (
+      <div className="loader">
+        <div className="words">
+          <div className="word">Loading</div>
+        </div>
+      </div>
+    )
+  }
 
   if (!user) {
     return null // or a loading spinner
