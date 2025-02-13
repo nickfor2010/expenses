@@ -183,7 +183,7 @@ export default function ExpenseForm({ onClose }: ExpenseFormProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-full overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Add Expense</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className={styles.group}>
