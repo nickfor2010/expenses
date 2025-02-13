@@ -32,11 +32,10 @@
   border-radius: 8px;
 }
 
-.button {
+button {
   background-color: #f8b195;
 }
 
 .addButton {
   background-color: #355c7d;
 }
-
