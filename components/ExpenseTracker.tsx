@@ -27,8 +27,10 @@ export default function ExpenseTracker() {
   const [timePeriod, setTimePeriod] = useState("all-time")
   const [isEditing, setIsEditing] = useState<number | null>(null)
   const [formData, setFormData] = useState<Expense | null>(null)
+  const [isFlipped, setIsFlipped] = useState(false)
   const router = useRouter()
   const queryClient = useQueryClient()
+  const todayDate = format(new Date(), "MMMM dd, yyyy")
 
   useEffect(() => {
     const checkUser = async () => {
@@ -190,35 +192,33 @@ export default function ExpenseTracker() {
           </div>
 
           {/* Today's Total Expenses Card */}
-          <div className="bg-white rounded-lg shadow p-4 mb-4">
-            <h2 className="text-lg font-semibold mb-2">Today&apos;s Total Expenses</h2>
-            {isTodayLoading ? (
-              <div className={`${styles.card} ${styles.loader}`}>
-                <div className={styles.words}>
-                  <span className={styles.word}>Loading</span>
-                  <span className={styles.word}>Loading</span>
-                  <span className={styles.word}>Loading</span>
-                  <span className={styles.word}>Loading</span>
-                  <span className={styles.word}>Loading</span>
-                </div>
+          <div className={`${styles.flipCard} mb-4`} onClick={() => setIsFlipped(!isFlipped)}>
+            <div className={`${styles.flipCardInner} ${isFlipped ? styles.flipped : ""}`}>
+              <div className={styles.flipCardFront}>
+                <h2 className={styles.title}>Today's {todayDate} Expenses</h2>
+                {isTodayLoading ? (
+                  <div className={`${styles.card} ${styles.loader}`}>
+                    <div className={styles.words}>
+                      <span className={styles.word}>Loading</span>
+                      <span className={styles.word}>Loading</span>
+                      <span className={styles.word}>Loading</span>
+                      <span className={styles.word}>Loading</span>
+                      <span className={styles.word}>Loading</span>
+                    </div>
+                  </div>
+                ) : isTodayError ? (
+                  <p className="text-red-600">Error: {(todayError as Error).message}</p>
+                ) : (
+                  <p className="text-3xl font-bold">${todayExpenses?.reduce((sum, expense) => sum + (expense.amount || 0), 0).toFixed(2) || "0.00"}</p>
+                )}
               </div>
-            ) : isTodayError ? (
-              <p className="text-red-600">Error: {(todayError as Error).message}</p>
-            ) : (
-              <div>
-                <p className="text-3xl font-bold">${todayExpenses?.reduce((sum, expense) => sum + (expense.amount || 0), 0).toFixed(2) || "0.00"}</p>
+              <div className={styles.flipCardBack}>
+                <h2 className={styles.title}>Today's {todayDate} Expenses</h2>
                 <ul>
                   {todayExpenses?.map((expense: Expense) => (
-                    <li key={expense.id} className="flex justify-between items-center my-2">
+                    <li key={expense.id} className="my-2">
                       {isEditing === expense.id ? (
                         <form onSubmit={handleSubmit} className="space-y-2 w-full">
-                          <input
-                            type="date"
-                            name="date"
-                            value={formData?.date || ""}
-                            onChange={handleChange}
-                            className="w-full border rounded px-2 py-1"
-                          />
                           <input
                             type="text"
                             name="description"
@@ -273,9 +273,8 @@ export default function ExpenseTracker() {
                           </div>
                         </form>
                       ) : (
-                        <>
+                        <div className="flex justify-between items-center">
                           <div>
-                            <p className="font-bold">{format(new Date(expense.date), "MMMM dd, yyyy")}</p>
                             <p>{expense.description}</p>
                             <p>
                               {expense.quantity} {expense.unit} - ${expense.amount.toFixed(2)}
@@ -299,13 +298,13 @@ export default function ExpenseTracker() {
                               Delete
                             </button>
                           </div>
-                        </>
+                        </div>
                       )}
                     </li>
                   ))}
                 </ul>
               </div>
-            )}
+            </div>
           </div>
 
           <button
