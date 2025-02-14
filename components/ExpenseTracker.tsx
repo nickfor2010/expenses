@@ -212,7 +212,7 @@ export default function ExpenseTracker() {
                   <p className="text-3xl font-bold">${todayExpenses?.reduce((sum, expense) => sum + (expense.amount || 0), 0).toFixed(2) || "0.00"}</p>
                 )}
               </div>
-              <div className={styles.flipCardBack}>
+              <div className={`${styles.flipCardBack} ${styles.scrollable}`}>
                 <h2 className={styles.title}>Today's {todayDate} Expenses</h2>
                 <ul>
                   {todayExpenses?.map((expense: Expense) => (
