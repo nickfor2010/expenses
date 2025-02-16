@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import styles from './BackgroundAnimation.module.css';
 
 const BackgroundAnimation = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -105,7 +106,7 @@ const BackgroundAnimation = () => {
     };
   }, []);
 
-  return <canvas ref={canvasRef} id="animationCanvas"></canvas>;
+  return <canvas ref={canvasRef} className={styles.canvas}></canvas>;
 };
 
 export default BackgroundAnimation;
