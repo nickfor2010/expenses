@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase, signOut, getCurrentUser } from "@/lib/supabase"
 import ExpenseFormMobile from "@/components/ExpenseFormMobile"
+import BackgroundAnimation from "@/components/BackgroundAnimation"
 import { format, startOfYear, startOfMonth } from "date-fns"
 import ErrorBoundary from "@/components/ErrorBoundary"
 import { useRouter } from "next/navigation"
@@ -150,6 +151,7 @@ export default function ExpenseTracker() {
 
   return (
     <ErrorBoundary>
+      <BackgroundAnimation />
       <div className={styles.container}>
         <div className="max-w-md mx-auto p-4">
           <div className={`${styles.header} flex justify-between items-center mb-4`}>
