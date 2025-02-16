@@ -214,7 +214,7 @@ export default function ExpenseTracker() {
               </div>
               <div className={`${styles.flipCardBack} ${styles.scrollable}`}>
                 <h2 className={styles.title}>Today's {todayDate} Expenses</h2>
-                <ul>
+                <ul className="text-left">
                   {todayExpenses?.map((expense: Expense) => (
                     <li key={expense.id} className="my-2">
                       {isEditing === expense.id ? (
