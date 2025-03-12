@@ -57,20 +57,21 @@ export default function ExpenseForm({ onClose }: ExpenseFormProps) {
     },
   })
 
-  // Fetch previous descriptions
-  const { data: previousDescriptions } = useQuery({
-    queryKey: ["previousDescriptions"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("expenses")
-        .select("description")
-        .order("description", { ascending: true })
-        .limit(100) // Limit to the 100 most common descriptions
-      if (error) throw error
-      const uniqueDescriptions = Array.from(new Set(data.map((item: { description: string }) => item.description)))
-      return uniqueDescriptions
-    },
-  })
+  // Fetch previous descriptions from inventory
+const { data: previousDescriptions } = useQuery({
+  queryKey: ["previousDescriptions"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("inventory") // Change table name to "inventory"
+      .select("description") // Keep selecting "description"
+      .order("description", { ascending: true })
+      .limit(200) // Limit to the 100 most common descriptions
+    if (error) throw error
+    const uniqueDescriptions = Array.from(new Set(data.map((item: { description: string }) => item.description)))
+    return uniqueDescriptions
+  },
+})
+
 
   const addExpenseMutation = useMutation({
     mutationFn: async (data: ExpenseFormData) => {
